@@ -6,15 +6,20 @@ import reportWebVitals from './reportWebVitals';
 import { DataProvider } from './contexts/DataProvider';
 import { AuthProvider } from './contexts/AuthProvider';
 import firebase from './firebase'
+import { BrowserRouter } from 'react-router-dom';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
+    {/* <BrowserRouter> */}
     <AuthProvider>
       <DataProvider>
+        
         <App />
+        
       </DataProvider>
     </AuthProvider>
+    {/* </BrowserRouter> */}
   </React.StrictMode>
 );
 

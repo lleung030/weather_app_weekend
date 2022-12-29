@@ -85,10 +85,26 @@ export const DataProvider = function(props) {
         
         setPosts([newPost, ...posts])
     }
-    
+        
+    async function fetchPokemon(parameter) {
+        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${parameter}`)
+        const data = await response.json()
+        return data
+    }
+
+    async function weatherFetch(cityname) {
+        let APIkey = 'e58e31605e103eeaa1c736474c1a9e80'
+        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityname}&appid=${APIkey}`)
+        const weatherData = await response.json()
+        return (
+            weatherData
+        )
+    }
 
     const value = {
         posts,
+        fetchPokemon,
+        weatherFetch, 
         loadPost,
         addPost
     }

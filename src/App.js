@@ -2,8 +2,9 @@ import logo from './logo.svg';
 import './App.css';
 import { useState, useContext } from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import { AuthContext } from './contexts/AuthProvider'
-
+import { AuthContext } from './contexts/AuthProvider';
+import Home from './components/Home';
+// import Post from './components/Post';
 
 export default function App() {
   const { login, logout, user } = useContext(AuthContext)
@@ -24,10 +25,14 @@ export default function App() {
           </ul>
         </nav>
         <Routes>
-          <Route path='/' element={<h1>Home</h1>} />
+          {/* <Route path='/' element={<h1>Home</h1>} /> */}
+          <Route path='/' element={<Home />} />
+          {/* <Route path='/Post' element={<Post />} /> */}
         </Routes>
       </BrowserRouter>
     </div>
   );
 }
+
+
 

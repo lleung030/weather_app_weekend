@@ -1,64 +1,128 @@
-const weatherElement = document.getElementById('weatherDataInfo')
+import { useState, useEffect, useContext } from 'react'
+import { DataContext } from '../contexts/DataProvider'
 
-const weatherFetch = async function(cityname) {
-    
-    let APIkey = 'e58e31605e103eeaa1c736474c1a9e80'
-    try{
-        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityname}&appid=${APIkey}`)
-        
-        const weatherData = await response.json()
+export default function Home() {
+    const [pokemon, setPokemon] = useState({})
+    //const [weather, setWeather] = useState({})
+    const [weather, setWeather] = useState({})
 
-        const highData = ((((weatherData.main.temp_max)-273.15)*1.8)+32)
-        const lowData = ((((weatherData.main.temp_min)-273.15)*1.8)+32)
-        const forecastData = weatherData.weather[0].main
-        const humidityData = weatherData.main.humidity
-        const weatherEl = document.createElement('div')
-        weatherEl.classList.add('card','mb-3')
-    
-        //input type text , submit put my questions div inside a submit form  
+    const [loadState, setLoadState] = useState("LOADING")
 
-        weatherEl.innerHTML=`
-            <div class="card-body">
-                <h1>${cityname}</h1>
-                <h2>High: ${highData.toFixed(2)}\u2109</h2>
-                <h2>Low: ${lowData.toFixed(2)}\u2109</h2>
-                <h2>Forecast: ${forecastData}</h2>
-                <h2>Humidity: ${humidityData}%</h2>
-            </div>
-        `
+    const { fetchPokemon } = useContext(DataContext)
+    //new code
+    const { weatherFetch } = useContext(DataContext)
 
 
-        console.log(weatherData)
+    useEffect(() => {
+        async function getFirstWeather() {
+            const data = await weatherFetch(1)
+            setWeather(data)
+            setLoadState("LOADED")
+        }
+        getFirstWeather()
+    }, [])
 
-        // console.log(`Temperature HIGH: ${highData}, Temperature LOW: ${lowData}, FORECAST: ${forecastData}, HUMIDITY: ${humidityData}`)
+    //new code
 
+    async function searchWeather(event) {
+        event.preventDefault()
+        const formData = new FormData(event.target)
+        console.log(formData.get('weatherName'))
 
-        weatherElement.appendChild(weatherEl)
+        const data = await weatherFetch(formData.get('weatherName'))
+        setWeather(data)
+        setLoadState("LOADED")
+        event.target.reset()
     }
-    catch (err) {
-        console.log('There is an error')
-    }
+
+    return (
+        <div className='weather'>
+            <h1>Weather</h1>
+            <p>Showing Weather Information: { weather.main }</p>
+            <form onSubmit={searchWeather}>
+                <input type="text" name="weatherName" />
+                <button>Search</button>
+            </form>
+            {
+                (loadState === 'LOADED') ?
+                <>
+                    {/* <img src={ pokemon.sprites.front_default } alt="" /> */}
+                    <h2>{ weather.main }</h2>
+                    <p>Forecast: { weather.main }</p>
+                    <p>Humidity: { weather.main }</p>    
+                </> :
+                <p>Loading...</p>
+            }
+            {/* {
+                (pokemon.id > 1) ?
+                <button onClick={async () => {
+                    pokemon.id--
+                    const data = await fetchPokemon(pokemon.id)
+                    setPokemon(data)
+                    setLoadState("LOADED")                   
+                }}>Previous Pokemon</button>
+                : <></>
+            }
+            <button onClick={async () => {
+                    pokemon.id++
+                    const data = await fetchPokemon(pokemon.id)
+                    setPokemon(data)
+                    setLoadState("LOADED")     
+            }}>Next Pokemon</button> */}
+        </div>
+    )
 }
 
-        
+    //new code 
 
-    const formEl = document.getElementById('form')
-    formEl.addEventListener('submit', (event) => {
-    event.preventDefault() // Prevents refresh
-    const inputElement = document.getElementById('validationServer03')
-    weatherFetch(inputElement.value)
-})
 
-    const clearBtn = document.getElementById('clear')
-    clearBtn.addEventListener('click', (event) => {
-    event.preventDefault()
-    weatherElement.innerHTML = ''
-    // weathers = []
-    // localStorage.setItem('employees', JSON.stringify(employees))
-    localStorage.removeItem('weatherDataInfo')
-})
 
-// weatherFetch('San Francisco')
 
-// onclick="weatherFetch(document.getElementById('validationServer03').value)"
+//     async function searchPokemon(event) {
+//         event.preventDefault()
+//         const formData = new FormData(event.target)
+//         console.log(formData.get('pokemonName'))
 
+//         const data = await fetchPokemon(formData.get('pokemonName'))
+//         setPokemon(data)
+//         setLoadState("LOADED")
+//         event.target.reset()
+//     }
+
+//     return (
+//         <div className='pokemon'>
+//             <h1>Pokemon</h1>
+//             <p>Showing pokemon ID: { pokemon.id }</p>
+//             <form onSubmit={searchPokemon}>
+//                 <input type="text" name="pokemonName" />
+//                 <button>Search</button>
+//             </form>
+//             {
+//                 (loadState === 'LOADED') ?
+//                 <>
+//                     <img src={ pokemon.sprites.front_default } alt="" />
+//                     <h2>{ pokemon.name }</h2>
+//                     <p>Height: { pokemon.height }</p>
+//                     <p>Weight: { pokemon.weight }</p>    
+//                 </> :
+//                 <p>Loading...</p>
+//             }
+//             {
+//                 (pokemon.id > 1) ?
+//                 <button onClick={async () => {
+//                     pokemon.id--
+//                     const data = await fetchPokemon(pokemon.id)
+//                     setPokemon(data)
+//                     setLoadState("LOADED")                   
+//                 }}>Previous Pokemon</button>
+//                 : <></>
+//             }
+//             <button onClick={async () => {
+//                     pokemon.id++
+//                     const data = await fetchPokemon(pokemon.id)
+//                     setPokemon(data)
+//                     setLoadState("LOADED")     
+//             }}>Next Pokemon</button>
+//         </div>
+//     )
+// }

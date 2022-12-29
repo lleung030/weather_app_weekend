@@ -1,6 +1,7 @@
 import { useContext, createContext, useEffect, useState } from 'react'
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from '@firebase/auth'
 
+
 export const AuthContext = createContext()
 
 export const AuthProvider = function(props) {
@@ -14,6 +15,7 @@ export const AuthProvider = function(props) {
     async function login() {
         const result = await signInWithPopup(auth, provider)
         console.log(result)
+
     }
 
     async function logout() {
@@ -23,12 +25,16 @@ export const AuthProvider = function(props) {
 
     useEffect(() => {
         onAuthStateChanged(auth, (userInfo) => {
+            
             if (userInfo) {
+                
+                // window.location = '/'
                 setUser({
                     email: userInfo.email,
                     username: userInfo.displayName,
                     uid: userInfo.uid,
                     loggedIn: true
+                    
                 })
             } else {
                 setUser({
@@ -37,6 +43,12 @@ export const AuthProvider = function(props) {
             }
         })
     }, [])
+
+    // onAuthStateChanged(auth, (userInfo) => {
+    //     if(userInfo) {
+    //         window.location = '/Home';
+    //     }
+    // })
 
     const value = {
         login,
