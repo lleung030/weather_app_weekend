@@ -6,7 +6,6 @@ import Login from './views/Login';
 import Home from './views/Home';
 import Profile from './views/Profile';
 import SingleCity from './views/SingleCity';
-import SingleZip from './views/SingleZip';
 import Search from './views/Search';
 
 export default function App() {
@@ -56,9 +55,6 @@ export default function App() {
           <Route path="/weather">
             <Route path="city">
               <Route path=":cityName" element={<SingleCity />}/>
-            </Route>
-            <Route path="zip">
-              <Route path=":zipCode" element={<SingleZip />}/>
             </Route>
           </Route>
           <Route path="/profile" element={

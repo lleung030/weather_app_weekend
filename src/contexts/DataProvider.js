@@ -89,53 +89,7 @@ export const DataProvider = function (props) {
         }
     }
     
-    const getZipWeather = async function(zip) {
-        try{
-            const locationResponse = await fetch(`//api.openweathermap.org/geo/1.0/zip?zip=${zip}&appid=${apiKey}`)
-            const locationData = await locationResponse.json()
     
-            const lat = locationData.lat
-            const lon = locationData.lon
-            const cityName = locationData.name
-            const country = locationData.country
-    
-            const weatherResponse = await fetch(`//api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}`)
-            const weatherData = await weatherResponse.json()
-            const tempF = convF(weatherData.main.temp).toFixed(1)
-            const tempC = convC(weatherData.main.temp).toFixed(1)
-            const tempLowF = convF(weatherData.main.temp_min).toFixed(1)
-            const tempLowC = convC(weatherData.main.temp_min).toFixed(1)
-            const tempHighF = convF(weatherData.main.temp_max).toFixed(1)
-            const tempHighC = convC(weatherData.main.temp_max).toFixed(1)
-            const forecast = weatherData.weather[0].main
-            const forecastDetails = toTitleCase(weatherData.weather[0].description)
-            const humidity = weatherData.main.humidity.toFixed(1)
-            const windMPH = convMPH(weatherData.wind.speed).toFixed(1)
-            const windKMPH = convKMPH(weatherData.wind.speed).toFixed(1)
-
-            return {
-                cityName: cityName,
-                zipCode: zip,
-                country: country,
-                tempF: tempF,
-                tempC: tempC,
-                tempLowF: tempLowF,
-                tempLowC: tempLowC,
-                tempHighF: tempHighF,
-                tempHighC: tempHighC,
-                forecast: forecast,
-                forecastDetails: forecastDetails,
-                humidity: humidity,
-                windMPH: windMPH,
-                windKMPH: windKMPH,
-            }
-        }
-
-        catch (err) {
-            console.log('ERROR!')
-            console.log(err)
-        }
-    }
 
     useEffect(() => {
         async function getCities() {
@@ -231,34 +185,13 @@ export const DataProvider = function (props) {
         })
     }
 
-    async function removeZip(id) {
-        await deleteDoc(doc(db, 'users', `${user.uid} `, 'zips', `${id}`))
-
-        const q = query(collection(db, 'users', `${user.uid} `, 'zips'), orderBy('zipCode', 'asc'))
-        const querySnapshot = await getDocs(q)
-        const zipDocs = []
-
-        querySnapshot.forEach((doc) => {
-            zipDocs.push({
-                id: doc.id,
-                uid: user.uid,
-                ...doc.data()
-            })
-
-            setZips(zipDocs)
-        })
-    }
-
     const value = {
         cities,
         zips,
         toTitleCase,
         getCityWeather,
-        getZipWeather,
         addCity,
-        addZip,
-        removeCity,
-        removeZip
+        removeCity
     }
 
     return (
